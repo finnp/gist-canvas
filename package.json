@@ -1,0 +1,25 @@
+{
+  "name": "gist-canvas",
+  "version": "1.0.0",
+  "description": "Render gists on canvas",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/finnp/gist-canvas.git"
+  },
+  "keywords": [
+    "canvas"
+  ],
+  "author": "Finn Pauls",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/finnp/gist-canvas/issues"
+  },
+  "homepage": "https://github.com/finnp/gist-canvas#readme",
+  "dependencies": {
+    "xhr": "^2.0.1"
+  }
+}
