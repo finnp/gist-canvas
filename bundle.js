@@ -1,25 +1,150 @@
 (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return a(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 var xhr = require('xhr')
+var hashchange = require('hashchange')
 
-var hash = window.location.hash.substr(1) || 'finnp/a275a003473c6d95f6d8'
 var canvas = document.querySelector('canvas')
-var uri = 'https://gist.githubusercontent.com/' + hash
-canvas.width = window.innerWidth
-canvas.height = window.innerHeight
 
-//window.onresize = fitCanvas
+hashchange.update(function (hash) {
+  canvas.width = window.innerWidth
+  canvas.height = window.innerHeight
+  
+  hash = hash || 'finnp/a275a003473c6d95f6d8'
+  var uri = 'https://gist.githubusercontent.com/' + hash
+  var ctx = canvas.getContext('2d')
+  var context = ctx
 
-var ctx = canvas.getContext('2d')
-var context = ctx
-
-xhr({
-  uri: uri + '/raw'
-}, function (err, resp, body) {
-  if(err) console.error(err)
-  eval(body)
+  xhr({
+    uri: uri + '/raw'
+  }, function (err, resp, body) {
+    if(err) console.error(err)
+    eval(body)
+  })
 })
+hashchange.update()
+},{"hashchange":2,"xhr":5}],2:[function(require,module,exports){
+var each = require('each'),
+	indexOf = require('indexof');
 
-},{"xhr":2}],2:[function(require,module,exports){
+var getFragment = function( url ){
+
+	var url = url || window.location.href;
+	return url.replace( /^[^#]*#?(.*)$/, '$1' );
+
+};
+
+var HashChange = function(){
+
+	var self = this;
+
+	this.onChangeCallbacks = [];
+
+	window.addEventListener("hashchange", function(e){
+		
+		self.hashChanged( getFragment(e.newURL) );
+
+	}, false);
+
+	return this;
+
+};
+
+HashChange.prototype = {
+
+	update : function( callback ){
+
+		if(callback){
+
+			this.onChangeCallbacks.push( callback );
+			return this;
+
+		} else {
+
+			this.hashChanged( getFragment() );
+
+		}
+
+	},
+
+	unbind : function( callback ){
+
+		var i = indexOf( this.onChangeCallbacks , callback);
+
+		if(i !== -1){
+
+			this.onChangeCallbacks.splice(i - 1, 1);
+
+		}
+
+		return this;
+
+	},
+	
+	updateHash : function( hash ){
+ 
+			this.currentHash = hash;
+ 
+			window.location.href = window.location.href.replace( /#.*/, '') + '#' + hash;
+ 
+		},
+
+	hashChanged : function( frag ){
+
+		if(this.onChangeCallbacks.length){
+
+			each(this.onChangeCallbacks, function( callback ){
+
+				callback( frag );
+
+				return true;
+
+			});
+
+		}
+
+		return this;
+
+	},
+
+
+}
+
+hashChange = new HashChange();
+
+module.exports = hashChange;
+
+},{"each":4,"indexof":3}],3:[function(require,module,exports){
+module.exports = function(arr, obj){
+  if (arr.indexOf) return arr.indexOf(obj);
+  for (var i = 0; i < arr.length; ++i) {
+    if (arr[i] === obj) return i;
+  }
+  return -1;
+};
+},{}],4:[function(require,module,exports){
+
+var hasOwn = Object.prototype.hasOwnProperty;
+var toString = Object.prototype.toString;
+
+module.exports = function forEach (obj, fn, ctx) {
+    if (toString.call(fn) !== '[object Function]') {
+        throw new TypeError('iterator must be a function');
+    }
+    var l = obj.length;
+    if (l === +l) {
+        for (var i = 0; i < l; i++) {
+            fn.call(ctx, obj[i], i, obj);
+        }
+    } else {
+        for (var k in obj) {
+            if (hasOwn.call(obj, k)) {
+                fn.call(ctx, obj[k], k, obj);
+            }
+        }
+    }
+};
+
+
+},{}],5:[function(require,module,exports){
 "use strict";
 var window = require("global/window")
 var once = require("once")
@@ -191,7 +316,7 @@ function createXHR(options, callback) {
 
 function noop() {}
 
-},{"global/window":3,"once":4,"parse-headers":8}],3:[function(require,module,exports){
+},{"global/window":6,"once":7,"parse-headers":11}],6:[function(require,module,exports){
 (function (global){
 if (typeof window !== "undefined") {
     module.exports = window;
@@ -204,7 +329,7 @@ if (typeof window !== "undefined") {
 }
 
 }).call(this,typeof global !== "undefined" ? global : typeof self !== "undefined" ? self : typeof window !== "undefined" ? window : {})
-},{}],4:[function(require,module,exports){
+},{}],7:[function(require,module,exports){
 module.exports = once
 
 once.proto = once(function () {
@@ -225,7 +350,7 @@ function once (fn) {
   }
 }
 
-},{}],5:[function(require,module,exports){
+},{}],8:[function(require,module,exports){
 var isFunction = require('is-function')
 
 module.exports = forEach
@@ -273,7 +398,7 @@ function forEachObject(object, iterator, context) {
     }
 }
 
-},{"is-function":6}],6:[function(require,module,exports){
+},{"is-function":9}],9:[function(require,module,exports){
 module.exports = isFunction
 
 var toString = Object.prototype.toString
@@ -290,7 +415,7 @@ function isFunction (fn) {
       fn === window.prompt))
 };
 
-},{}],7:[function(require,module,exports){
+},{}],10:[function(require,module,exports){
 
 exports = module.exports = trim;
 
@@ -306,7 +431,7 @@ exports.right = function(str){
   return str.replace(/\s*$/, '');
 };
 
-},{}],8:[function(require,module,exports){
+},{}],11:[function(require,module,exports){
 var trim = require('trim')
   , forEach = require('for-each')
   , isArray = function(arg) {
@@ -338,4 +463,4 @@ module.exports = function (headers) {
 
   return result
 }
-},{"for-each":5,"trim":7}]},{},[1]);
+},{"for-each":8,"trim":10}]},{},[1]);
