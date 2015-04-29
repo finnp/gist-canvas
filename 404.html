@@ -1,0 +1,15 @@
+<html>
+  <head>
+    <title></title>
+  </head>
+  <body>
+    Redirecting...
+    <script>
+      var path = window.location.pathname
+      var parts = path.split('/')
+      var part2 = parts.pop()
+      var part1 = parts.pop()
+      window.location.href = '/#' + part1 + '/' + part2
+    </script>
+  </body>
+</html>
