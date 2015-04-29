@@ -21,6 +21,8 @@
   },
   "homepage": "https://github.com/finnp/gist-canvas#readme",
   "dependencies": {
+    "add-event-listener": "0.0.1",
+    "edit": "^1.0.1",
     "hashchange": "^1.0.0",
     "xhr": "^2.0.1"
   }
